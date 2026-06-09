@@ -1,14 +1,11 @@
 name: Build Garmin Watch Face
-
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -24,25 +21,25 @@ jobs:
           unzip -q sdk.zip -d sdk
           chmod +x sdk/bin/monkeyc
 
+      - name: Find Forerunner 55 device ID
+        run: |
+          grep -i "forerunner\|fr55\|runner55" sdk/bin/projectInfo.xml | head -30
+
       - name: Generate Developer Key
         run: |
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: List devices
-        run: |
-          java -jar sdk/bin/monkeybrains.jar -v
-          cat sdk/bin/projectInfo.xml | grep -i "forerunner\|runner55\|fr55" || echo "not found"
-          grep -i "forerunner" sdk/bin/projectInfo.xml | head -20
-
       - name: Build Watch Face
         run: |
+          DEVICE=$(grep -i "forerunner55\|fr55" sdk/bin/projectInfo.xml | grep -o 'id="[^"]*"' | head -1 | cut -d'"' -f2)
+          echo "Device ID found: $DEVICE"
           java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
             -jar sdk/bin/monkeybrains.jar \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
-            -d forerunner55 \
+            -d $DEVICE \
             -r
 
       - name: Upload PRG artifact
