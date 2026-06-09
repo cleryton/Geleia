@@ -29,6 +29,12 @@ jobs:
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
+      - name: List devices
+        run: |
+          java -jar sdk/bin/monkeybrains.jar -v
+          cat sdk/bin/projectInfo.xml | grep -i "forerunner\|runner55\|fr55" || echo "not found"
+          grep -i "forerunner" sdk/bin/projectInfo.xml | head -20
+
       - name: Build Watch Face
         run: |
           java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
@@ -36,7 +42,7 @@ jobs:
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
-            -d fenix5 \
+            -d forerunner55 \
             -r
 
       - name: Upload PRG artifact
