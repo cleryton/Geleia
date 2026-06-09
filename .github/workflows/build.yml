@@ -1,0 +1,46 @@
+name: Build Garmin Watch Face
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Download Connect IQ SDK
+        run: |
+          wget -q "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
+          unzip -q sdk.zip -d sdk
+          chmod +x sdk/bin/monkeyc
+
+      - name: Generate Developer Key
+        run: |
+          openssl genrsa -out developer_key.pem 4096
+          openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
+
+      - name: Build Watch Face
+        run: |
+          java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
+            -jar sdk/bin/monkeybrains.jar \
+            -o Geleia.prg \
+            -f monkey.jungle \
+            -y developer_key.der \
+            -d fr55 \
+            -r
+
+      - name: Upload PRG artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Geleia-watchface
+          path: Geleia.prg
