@@ -24,10 +24,8 @@ jobs:
           
       - name: Find device ID
         run: |
-          find sdk/share -name "*.xml" | head -5
-          ls sdk/share/
-          find sdk/share -name "*.json" | head -5
-          find sdk -name "devices.xml" | head -5
+          ls sdk/share/simulator/
+          find sdk/share/simulator -name "*.json" | xargs grep -li "forerunner\|fr55" 2>/dev/null | head -5
 
       - name: Generate Developer Key
         run: |
