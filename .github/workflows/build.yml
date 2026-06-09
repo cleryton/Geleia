@@ -21,9 +21,9 @@ jobs:
           unzip -q sdk.zip -d sdk
           chmod +x sdk/bin/monkeyc
 
-      - name: Find Forerunner 55 device ID
+      - name: Show all devices
         run: |
-          grep -i "forerunner\|fr55\|runner55" sdk/bin/projectInfo.xml | head -30
+          cat sdk/bin/projectInfo.xml | grep -o 'id="[^"]*"' | sort | uniq
 
       - name: Generate Developer Key
         run: |
@@ -32,14 +32,12 @@ jobs:
 
       - name: Build Watch Face
         run: |
-          DEVICE=$(grep -i "forerunner55\|fr55" sdk/bin/projectInfo.xml | grep -o 'id="[^"]*"' | head -1 | cut -d'"' -f2)
-          echo "Device ID found: $DEVICE"
           java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
             -jar sdk/bin/monkeybrains.jar \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
-            -d $DEVICE \
+            -d forerunner55 \
             -r
 
       - name: Upload PRG artifact
