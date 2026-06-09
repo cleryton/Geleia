@@ -17,15 +17,16 @@ jobs:
 
       - name: Download Connect IQ SDK
         run: |
-          wget -q "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
+          wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
+          ls -lh sdk.zip
           unzip -q sdk.zip -d sdk
-          chmod +x sdk/bin/monkeyc
+          ls sdk/
 
       - name: Find device ID
         run: |
-          find sdk -name "*.xml" | xargs grep -li "forerunner55\|fr55" 2>/dev/null
-          find sdk -name "forerunner*" -o -name "fr55*" 2>/dev/null
-          ls sdk/devices/ 2>/dev/null || ls sdk/bin/devices/ 2>/dev/null || find sdk -type d -name "devices"
+          find sdk -type d | head -30
+          find sdk -name "*.json" | head -10
+          find sdk -name "devices*" | head -10
 
       - name: Generate Developer Key
         run: |
