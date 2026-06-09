@@ -1,1 +1,8 @@
-project.manifest = manifest.xml
+project.name = GeleiaEstilosa
+project.version = 1.0.0
+project.type = watchface
+product.list = fr55
+entry.name = GeleiaApp
+src.dirs = source
+resources.dirs = resources
+permissions = ActivityRecording, Background
