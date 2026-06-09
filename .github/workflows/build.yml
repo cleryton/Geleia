@@ -21,12 +21,13 @@ jobs:
           ls -lh sdk.zip
           unzip -q sdk.zip -d sdk
           ls sdk/
-
+          
       - name: Find device ID
         run: |
-          find sdk -type d | head -30
-          find sdk -name "*.json" | head -10
-          find sdk -name "devices*" | head -10
+          find sdk/share -name "*.xml" | head -5
+          ls sdk/share/
+          find sdk/share -name "*.json" | head -5
+          find sdk -name "devices.xml" | head -5
 
       - name: Generate Developer Key
         run: |
