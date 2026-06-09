@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -18,33 +18,44 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Download Connect IQ SDK
+      - name: Download SDK
         run: |
           wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
           unzip -q sdk.zip
           ls -la
-          find . -name "monkeyc.jar" 2>/dev/null
 
-      - name: Generate Developer Key
+      - name: Find monkeyc.jar
+        id: find_jar
+        run: |
+          # O SDK 9.1 extrai para uma pasta tipo "connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b"
+          SDK_DIR=$(find . -maxdepth 1 -type d -name "connectiq-sdk-*" | head -1)
+          if [ -z "$SDK_DIR" ]; then
+            SDK_DIR="."
+          fi
+          JAR_PATH=$(find "$SDK_DIR" -name "monkeyc.jar" 2>/dev/null | head -1)
+          if [ -z "$JAR_PATH" ]; then
+            echo "ERROR: monkeyc.jar not found"
+            find . -name "*.jar" 2>/dev/null
+            exit 1
+          fi
+          echo "jar_path=$JAR_PATH" >> $GITHUB_OUTPUT
+          echo "Found: $JAR_PATH"
+
+      - name: Generate key
         run: |
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Build Watch Face
+      - name: Compile
         run: |
-          # Encontra o monkeyc.jar automaticamente
-          MONKEYC_JAR=$(find . -name "monkeyc.jar" 2>/dev/null | head -1)
-          echo "Using: $MONKEYC_JAR"
-          
-          java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
-            -jar "$MONKEYC_JAR" \
+          java -jar "${{ steps.find_jar.outputs.jar_path }}" \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
             -d fr55 \
             -r
 
-      - name: Upload PRG artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Geleia-watchface
