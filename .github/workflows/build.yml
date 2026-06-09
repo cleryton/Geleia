@@ -21,9 +21,11 @@ jobs:
           unzip -q sdk.zip -d sdk
           chmod +x sdk/bin/monkeyc
 
-      - name: Show all devices
+      - name: Find device ID
         run: |
-          cat sdk/bin/projectInfo.xml | grep -o 'id="[^"]*"' | sort | uniq
+          find sdk -name "*.xml" | xargs grep -li "forerunner55\|fr55" 2>/dev/null
+          find sdk -name "forerunner*" -o -name "fr55*" 2>/dev/null
+          ls sdk/devices/ 2>/dev/null || ls sdk/bin/devices/ 2>/dev/null || find sdk -type d -name "devices"
 
       - name: Generate Developer Key
         run: |
