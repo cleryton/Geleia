@@ -1,11 +1,14 @@
 name: Build Garmin Watch Face
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/checkout@v4
 
@@ -13,19 +16,18 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
 
       - name: Download Connect IQ SDK
         run: |
           wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
-          ls -lh sdk.zip
           unzip -q sdk.zip -d sdk
-          ls sdk/
-          
-      - name: Find device ID
+          ls -la sdk/bin/
+
+      - name: List available devices
         run: |
-          ls sdk/share/simulator/
-          find sdk/share/simulator -name "*.json" | xargs grep -li "forerunner\|fr55" 2>/dev/null | head -5
+          java -jar sdk/bin/monkeyc.jar -d ? 2>&1 | grep -i "fr55\|55" || echo "Checking devices file..."
+          grep -o 'id="[^"]*"' sdk/bin/devices.xml | head -20
 
       - name: Generate Developer Key
         run: |
@@ -35,11 +37,11 @@ jobs:
       - name: Build Watch Face
         run: |
           java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
-            -jar sdk/bin/monkeybrains.jar \
+            -jar sdk/bin/monkeyc.jar \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
-            -d forerunner55 \
+            -d fr55 \
             -r
 
       - name: Upload PRG artifact
