@@ -27,9 +27,9 @@ jobs:
 
       - name: Find devices file
         run: |
-          find sdk -name "devices.xml" 2>/dev/null
-          find sdk -name "*.xml" | xargs grep -l "fr55\|<device" 2>/dev/null | head -10
-          cat sdk/bin/projectInfo.xml | grep -i "device\|fr55\|runner" | head -20
+          find sdk -name "*.json" | xargs grep -l "fr55\|forerunner55" 2>/dev/null | head -5
+          find sdk -type f -name "compilerInfo.xml" | xargs grep -i "device" 2>/dev/null | head -20
+          ls sdk/bin/extdata/ 2>/dev/null | head -20
 
       - name: Upload
         uses: actions/upload-artifact@v4
