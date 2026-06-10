@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
-    <iq:application id="ad9baf7b26746ca787120ff1512e6d2" type="watchface" entry="GeleiaEstilosaWatchFace" name="@Strings.AppName">
+    <iq:application id="ad9baf7b26746ca787120ff1512e6d21" type="watchface" entry="GeleiaEstilosaWatchFace" name="@Strings.AppName">
         <iq:products>
             <iq:product id="fr55"/>
         </iq:products>
