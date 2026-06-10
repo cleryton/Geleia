@@ -4,9 +4,6 @@
         <iq:products>
             <iq:product id="fr55"/>
         </iq:products>
-        <iq:launcherIcon>
-            <iq:small-icon filename="images/icon.png"/>
-        </iq:launcherIcon>
         <iq:permissions>
             <iq:uses-permission id="Background"/>
         </iq:permissions>
@@ -14,5 +11,8 @@
             <iq:language>eng</iq:language>
         </iq:languages>
         <iq:barrels/>
+        <iq:launcherIcon>
+            <iq:small-icon filename="images/icon.png"/>
+        </iq:launcherIcon>
     </iq:application>
 </iq:manifest>
