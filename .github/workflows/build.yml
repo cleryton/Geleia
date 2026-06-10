@@ -35,7 +35,7 @@ jobs:
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
-            -d forerunner55 \
+            -d fr55 \
             -r
 
       - name: Upload
