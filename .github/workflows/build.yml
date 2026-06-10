@@ -28,21 +28,23 @@ jobs:
 
       - name: List available devices
         run: |
-          echo "=== Lista de dispositivos (primeiras 50 linhas) ==="
-          java -jar bin/monkeybrains.jar -d ? 2>&1 | head -50
+          echo "=== Lista de dispositivos ==="
+          java -jar bin/monkeybrains.jar -d ? 2>&1 | head -100
 
       - name: Generate developer key
         run: |
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Compile watch face (tentativa com forerunner55)
+      - name: Compile watch face
         run: |
+          # Use o nome correto após identificar. Enquanto isso, vamos tentar um placeholder
+          # Você vai substituir XXXX pelo nome correto que aparecer na listagem.
           java -jar bin/monkeybrains.jar \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
-            -d forerunner55 \
+            -d XXXX \
             -r
 
       - name: Upload PRG artifact
