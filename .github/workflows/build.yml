@@ -1,4 +1,4 @@
-name: Investigate SDK Structure
+name: Build Garmin Watch Face
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  investigate:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,20 +21,37 @@ jobs:
       - name: Download SDK
         run: |
           wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
+          unzip -q sdk.zip
+          chmod +x bin/monkeyc bin/monkeybrains.jar
 
-      - name: Extract SDK
+      - name: Generate developer key
         run: |
-          unzip -o sdk.zip
-          echo "=== Estrutura de diretórios ==="
-          find . -type d | head -30
-          echo "=== Arquivos .xml ==="
-          find . -name "*.xml"
-          echo "=== Arquivos contendo 'device' ==="
-          find . -name "*device*"
+          openssl genrsa -out developer_key.pem 4096
+          openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Try to list devices using monkeybrains.jar
+      - name: Compile (tentativa com diferentes IDs)
+        id: compile
+        continue-on-error: true
         run: |
-          echo "=== Tentando listar dispositivos com -d ? -o /dev/null ==="
-          java -jar bin/monkeybrains.jar -d ? -o /dev/null 2>&1 || true
-          echo "=== Tentando listar com --help ==="
-          java -jar bin/monkeybrains.jar --help 2>&1 | head -50
+          # Lista de possíveis IDs para o Forerunner 55
+          DEVICES=("fr55" "forerunner55" "fr55_standard" "fr55_android" "fr55m" "fr55_hr")
+          for DEV in "${DEVICES[@]}"; do
+            echo "Tentando dispositivo: $DEV"
+            if java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d "$DEV" -r; then
+              echo "SUCESSO com $DEV"
+              echo "device=$DEV" >> $GITHUB_OUTPUT
+              exit 0
+            else
+              echo "Falha com $DEV"
+            fi
+          done
+          # Se nenhum funcionar, usa o simulador
+          echo "Tentando compilar para o simulador (-d sim)"
+          java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d sim -r
+          echo "device=sim" >> $GITHUB_OUTPUT
+
+      - name: Upload PRG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Geleia-watchface
+          path: Geleia.prg
