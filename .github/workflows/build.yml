@@ -19,9 +19,6 @@ jobs:
         run: |
           wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
           unzip -q sdk.zip -d sdk
-      - name: List valid device IDs
-        run: |
-          find sdk -type f | xargs grep -l "forerunner" 2>/dev/null
 
       - name: Generate Key
         run: |
