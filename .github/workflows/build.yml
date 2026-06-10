@@ -18,18 +18,28 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Download SDK
+      - name: Download and extract SDK
         run: |
           wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
           unzip -q sdk.zip
-          mv connectiq-sdk-* sdk
+          echo "Contents after unzip:"
+          ls -la
+          # Encontra a pasta que começa com "connectiq-sdk-"
+          SDK_DIR=$(find . -maxdepth 1 -type d -name "connectiq-sdk-*" | head -1)
+          if [ -z "$SDK_DIR" ]; then
+            echo "ERROR: SDK directory not found!"
+            exit 1
+          fi
+          echo "Found SDK directory: $SDK_DIR"
+          mv "$SDK_DIR" sdk
+          ls -la sdk/bin/
 
-      - name: Generate key
+      - name: Generate developer key
         run: |
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Compile
+      - name: Compile watch face
         run: |
           java -jar sdk/bin/monkeyc.jar \
             -o Geleia.prg \
@@ -38,7 +48,7 @@ jobs:
             -d fr55 \
             -r
 
-      - name: Upload artifact
+      - name: Upload PRG artifact
         uses: actions/upload-artifact@v4
         with:
           name: Geleia-watchface
