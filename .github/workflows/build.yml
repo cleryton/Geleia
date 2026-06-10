@@ -35,7 +35,7 @@ jobs:
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
-            -d sim \
+            -d fenix5 \
             -r
 
       - name: Upload PRG artifact
