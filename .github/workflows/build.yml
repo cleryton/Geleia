@@ -22,17 +22,8 @@ jobs:
         run: |
           wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
           unzip -q sdk.zip
-          echo "Contents after unzip:"
-          ls -la
-          # Encontra a pasta que começa com "connectiq-sdk-"
-          SDK_DIR=$(find . -maxdepth 1 -type d -name "connectiq-sdk-*" | head -1)
-          if [ -z "$SDK_DIR" ]; then
-            echo "ERROR: SDK directory not found!"
-            exit 1
-          fi
-          echo "Found SDK directory: $SDK_DIR"
-          mv "$SDK_DIR" sdk
-          ls -la sdk/bin/
+          # O SDK extrai diretamente (sem subpasta)
+          ls -la bin/monkeyc.jar
 
       - name: Generate developer key
         run: |
@@ -41,7 +32,7 @@ jobs:
 
       - name: Compile watch face
         run: |
-          java -jar sdk/bin/monkeyc.jar \
+          java -jar bin/monkeyc.jar \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
