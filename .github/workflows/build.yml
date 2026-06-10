@@ -25,18 +25,11 @@ jobs:
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Build
+      - name: Find devices file
         run: |
-          java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
-            -jar sdk/bin/monkeybrains.jar \
-            -p sdk/bin/projectInfo.xml \
-            -a sdk/bin/api.db \
-            -b sdk/bin/api.mir \
-            -o Geleia.prg \
-            -f monkey.jungle \
-            -y developer_key.der \
-            -d fr55 \
-            -r
+          find sdk -name "devices.xml" 2>/dev/null
+          find sdk -name "*.xml" | xargs grep -l "fr55\|<device" 2>/dev/null | head -10
+          cat sdk/bin/projectInfo.xml | grep -i "device\|fr55\|runner" | head -20
 
       - name: Upload
         uses: actions/upload-artifact@v4
