@@ -1,4 +1,4 @@
-name: Build Garmin Watch Face
+name: Build Garmin Watch Face (verbose)
 
 on:
   push:
@@ -29,29 +29,13 @@ jobs:
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Compile (tentativa com diferentes IDs)
-        id: compile
-        continue-on-error: true
+      - name: Compile with error details
         run: |
-          # Lista de possíveis IDs para o Forerunner 55
-          DEVICES=("fr55" "forerunner55" "fr55_standard" "fr55_android" "fr55m" "fr55_hr")
-          for DEV in "${DEVICES[@]}"; do
-            echo "Tentando dispositivo: $DEV"
-            if java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d "$DEV" -r; then
-              echo "SUCESSO com $DEV"
-              echo "device=$DEV" >> $GITHUB_OUTPUT
-              exit 0
-            else
-              echo "Falha com $DEV"
-            fi
-          done
-          # Se nenhum funcionar, usa o simulador
-          echo "Tentando compilar para o simulador (-d sim)"
-          java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d sim -r
-          echo "device=sim" >> $GITHUB_OUTPUT
-
-      - name: Upload PRG artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Geleia-watchface
-          path: Geleia.prg
+          echo "=== Monkey Jungle content ==="
+          cat monkey.jungle
+          echo "=== Manifest content ==="
+          cat manifest.xml
+          echo "=== Source files ==="
+          ls -la source/
+          echo "=== Compilation attempt ==="
+          java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d fr55 -r
