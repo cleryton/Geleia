@@ -27,16 +27,16 @@ jobs:
           openssl pkcs8 -topk8 -inform PEM -outform DER \
             -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Build Watch Face
-        run: |
-            chmod +x sdk/bin/monkeyc
-             sdk/bin/monkeyc \
-            --output Geleia.prg \
-            --private-key developer_key.der \
-            --manifest manifest.xml \
-            --device fr55 \
-            --jungles monkey.jungle \
-            --release
+     - name: Build Watch Face
+       run: |
+        chmod +x sdk/bin/monkeyc
+        sdk/bin/monkeyc \
+        --output Geleia.prg \
+        --private-key developer_key.der \
+        --manifest manifest.xml \
+        --device fenix6pro \
+        --jungles monkey.jungle \
+        --release
 
       - name: Upload
         uses: actions/upload-artifact@v4
