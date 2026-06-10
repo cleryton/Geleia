@@ -25,8 +25,10 @@ jobs:
       - name: Extract SDK
         run: |
           unzip -o sdk.zip
-          echo "Conteúdo após extração:"
+          echo "=== Conteúdo do diretório atual ==="
           ls -la
+          echo "=== Procurando monkeyc.jar ==="
+          find . -name "monkeyc.jar" -type f
 
       - name: Generate developer key
         run: |
@@ -35,7 +37,14 @@ jobs:
 
       - name: Compile watch face
         run: |
-          java -jar bin/monkeyc.jar \
+          # Encontra o monkeyc.jar dinamicamente
+          JAR_PATH=$(find . -name "monkeyc.jar" -type f | head -1)
+          if [ -z "$JAR_PATH" ]; then
+            echo "ERRO: monkeyc.jar não encontrado!"
+            exit 1
+          fi
+          echo "Usando: $JAR_PATH"
+          java -jar "$JAR_PATH" \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
