@@ -15,22 +15,21 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Download Connect IQ SDK
+      - name: Download SDK
         run: |
           wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
           unzip -q sdk.zip -d sdk
 
-      - name: Find Forerunner 55 device ID
+      - name: List valid device IDs
         run: |
-          ls sdk/share/simulator/
-          find sdk/share/simulator -name "*.json" | xargs grep -li "forerunner\|fr55" 2>/dev/null | head -5
+          java -jar sdk/bin/monkeybrains.jar -d invalid_device_to_list 2>&1 | grep -i "valid\|device\|fr\|runner" | head -30
 
-      - name: Generate Developer Key
+      - name: Generate Key
         run: |
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Build Watch Face
+      - name: Build
         run: |
           java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
             -jar sdk/bin/monkeybrains.jar \
@@ -40,7 +39,7 @@ jobs:
             -d forerunner55 \
             -r
 
-      - name: Upload PRG artifact
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: Geleia-watchface
