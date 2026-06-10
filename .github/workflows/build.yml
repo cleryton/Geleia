@@ -22,35 +22,19 @@ jobs:
         run: |
           wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
 
-      - name: Inspect zip contents
-        run: |
-          echo "=== Listando arquivos dentro do zip (primeiras 50 linhas) ==="
-          unzip -l sdk.zip | head -50
-          echo "=== Procurando por monkeyc.jar dentro do zip ==="
-          unzip -l sdk.zip | grep -i "monkeyc\.jar"
-
       - name: Extract SDK
         run: |
           unzip -o sdk.zip
-          echo "=== Conteúdo após extração ==="
-          ls -la
-          echo "=== Procurando por monkeyc.jar no sistema de arquivos ==="
-          find . -name "monkeyc.jar" 2>/dev/null || echo "Nenhum monkeyc.jar encontrado"
+          ls -la bin/
 
       - name: Generate developer key
         run: |
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Compile (se monkeyc.jar existir)
+      - name: Compile watch face
         run: |
-          JAR_PATH=$(find . -name "monkeyc.jar" -type f | head -1)
-          if [ -z "$JAR_PATH" ]; then
-            echo "ERRO: monkeyc.jar não encontrado. Verifique o log acima."
-            exit 1
-          fi
-          echo "Usando $JAR_PATH"
-          java -jar "$JAR_PATH" \
+          java -jar bin/monkeybrains.jar \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
