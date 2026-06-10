@@ -10,9 +10,9 @@
         <iq:languages>
             <iq:language>eng</iq:language>
         </iq:languages>
-        <iq:barrels/>
         <iq:launcherIcon>
             <iq:small-icon filename="images/icon.png"/>
         </iq:launcherIcon>
+        <iq:barrels/>
     </iq:application>
 </iq:manifest>
