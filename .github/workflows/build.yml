@@ -1,4 +1,4 @@
-name: Build Garmin Watch Face (verbose)
+name: Build Garmin Watch Face
 
 on:
   push:
@@ -29,13 +29,12 @@ jobs:
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Compile with error details
+      - name: Compile for simulator
         run: |
-          echo "=== Monkey Jungle content ==="
-          cat monkey.jungle
-          echo "=== Manifest content ==="
-          cat manifest.xml
-          echo "=== Source files ==="
-          ls -la source/
-          echo "=== Compilation attempt ==="
-          java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d fr55 -r
+          java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d sim -r
+
+      - name: Upload PRG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Geleia-watchface
+          path: Geleia.prg
