@@ -22,24 +22,7 @@ jobs:
         run: |
           wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
           unzip -q sdk.zip
-          ls -la
-
-      - name: Find monkeyc.jar
-        id: find_jar
-        run: |
-          # O SDK 9.1 extrai para uma pasta tipo "connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b"
-          SDK_DIR=$(find . -maxdepth 1 -type d -name "connectiq-sdk-*" | head -1)
-          if [ -z "$SDK_DIR" ]; then
-            SDK_DIR="."
-          fi
-          JAR_PATH=$(find "$SDK_DIR" -name "monkeyc.jar" 2>/dev/null | head -1)
-          if [ -z "$JAR_PATH" ]; then
-            echo "ERROR: monkeyc.jar not found"
-            find . -name "*.jar" 2>/dev/null
-            exit 1
-          fi
-          echo "jar_path=$JAR_PATH" >> $GITHUB_OUTPUT
-          echo "Found: $JAR_PATH"
+          mv connectiq-sdk-* sdk
 
       - name: Generate key
         run: |
@@ -48,7 +31,7 @@ jobs:
 
       - name: Compile
         run: |
-          java -jar "${{ steps.find_jar.outputs.jar_path }}" \
+          java -jar sdk/bin/monkeyc.jar \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
