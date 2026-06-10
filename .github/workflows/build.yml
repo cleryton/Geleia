@@ -26,16 +26,9 @@ jobs:
         run: |
           unzip -o sdk.zip
 
-      - name: List all devices
+      - name: Search for Forerunner 55 in devices.xml
         run: |
-          echo "=== TODOS OS DISPOSITIVOS DISPONÍVEIS ==="
-          java -jar bin/monkeybrains.jar -d ? 2>&1 | tee device_list.txt
-          echo "========================================="
-          echo "Buscando por '55' ou 'forerunner':"
-          grep -i "55\|forerunner" device_list.txt || echo "Nenhum dispositivo com '55' encontrado."
-
-      - name: Upload device list
-        uses: actions/upload-artifact@v4
-        with:
-          name: device-list
-          path: device_list.txt
+          echo "=== Dispositivos encontrados no devices.xml ==="
+          grep -i "fr55\|forerunner55\|forerunner 55" bin/devices.xml || echo "Nenhum dispositivo com '55' encontrado."
+          echo "=== Todos os IDs de dispositivo (primeiros 30) ==="
+          grep -o 'id="[^"]*"' bin/devices.xml | head -30
