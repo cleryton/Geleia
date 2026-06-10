@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" iq:version="3.2.0">
-   <iq:application entry="GeleiaApp" id="12345678-1234-1234-1234-123456789012" type="watchface">
+<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" iq:version="4.0.0">
+   <iq:application entry="GeleiaApp" id="12345678-1234-1234-1234-123456789012">
       <iq:name>Geleia Estilosa</iq:name>
       <iq:description>Face watch com geleia animada</iq:description>
       <iq:author>SeuNome</iq:author>
       <iq:version major="1" minor="0" build="0"/>
-      <iq:products>
-         <iq:product id="forerunner55"/>
-      </iq:products>
-      <iq:permissions>
-         <iq:uses-permission id="Background"/>
-      </iq:permissions>
-      <iq:languages>
-         <iq:language>por</iq:language>
-      </iq:languages>
    </iq:application>
+   <iq:products>
+      <iq:product id="fr55"/>
+   </iq:products>
+   <iq:permissions>
+      <iq:uses-permission name="ActivityRecording"/>
+      <iq:uses-permission name="Background"/>
+   </iq:permissions>
+   <iq:languages>
+      <iq:language>por</iq:language>
+   </iq:languages>
 </iq:manifest>
