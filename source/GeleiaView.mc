@@ -1,9 +1,9 @@
-import Toybox.Graphics;
-import Toybox.Lang;
-import Toybox.System;
-import Toybox.Time;
-import Toybox.Time.Gregorian;
-import Toybox.WatchUi;
+using Toybox.Graphics;
+using Toybox.Lang;
+using Toybox.System;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
+using Toybox.WatchUi;
 
 class GeleiaView extends WatchUi.WatchFace {
 
