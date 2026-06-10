@@ -29,6 +29,7 @@ jobs:
         run: |
           java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
             -jar sdk/bin/monkeybrains.jar \
+            -p sdk/bin/projectInfo.xml \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
