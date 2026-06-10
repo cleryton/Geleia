@@ -28,24 +28,22 @@ jobs:
 
       - name: List available devices
         run: |
-          echo "=== Lista de dispositivos ==="
-          java -jar bin/monkeybrains.jar -d ? 2>&1 | head -100
+          echo "=== LISTA DE DISPOSITIVOS ==="
+          java -jar bin/monkeybrains.jar -d ? 2>&1 | tee devices.txt
+          echo "============================"
+          echo "Procurando por '55' ou 'forerunner':"
+          grep -i "55\|forerunner" devices.txt || echo "Nenhum dispositivo com 55 encontrado"
 
       - name: Generate developer key
         run: |
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Compile watch face
+      - name: Compile (tentativa com um nome comum)
         run: |
-          # Use o nome correto após identificar. Enquanto isso, vamos tentar um placeholder
-          # Você vai substituir XXXX pelo nome correto que aparecer na listagem.
-          java -jar bin/monkeybrains.jar \
-            -o Geleia.prg \
-            -f monkey.jungle \
-            -y developer_key.der \
-            -d XXXX \
-            -r
+          # Tente um destes nomes (descomente um por vez)
+          # java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d fr55 -r
+          java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d fr55_standard -r
 
       - name: Upload PRG artifact
         uses: actions/upload-artifact@v4
