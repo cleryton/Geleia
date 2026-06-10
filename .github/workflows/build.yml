@@ -1,4 +1,4 @@
-name: Build Garmin Watch Face
+name: Build Garmin Watch Face (SDK 8.4.2)
 
 on:
   push:
@@ -16,22 +16,23 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '11'  # SDK 8 funciona bem com Java 11
 
-      - name: Download SDK
+      - name: Download SDK 8.4.2
         run: |
-          wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" -O sdk.zip
-          unzip -q sdk.zip
-          chmod +x bin/monkeyc bin/monkeybrains.jar
+          wget --no-check-certificate "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-8.4.2-2025-09-17-8a7b3c5d.zip" -O sdk.zip
+          unzip -q sdk.zip -d sdk_temp
+          mv sdk_temp/connectiq-sdk-* sdk
+          ls -la sdk/bin/
 
       - name: Generate developer key
         run: |
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Compile for simulator
+      - name: Compile with SDK 8.4.2
         run: |
-          java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d sim -r
+          java -jar sdk/bin/monkeyc.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d fr55 -r
 
       - name: Upload PRG artifact
         uses: actions/upload-artifact@v4
