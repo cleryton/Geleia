@@ -3,6 +3,7 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,13 +24,20 @@ jobs:
       - name: Generate Key
         run: |
           openssl genrsa -out developer_key.pem 4096
-          openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
+          openssl pkcs8 -topk8 -inform PEM -outform DER \
+            -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Find devices file
+      - name: Build Watch Face
         run: |
-          find sdk -name "*.json" | xargs grep -l "fr55\|forerunner55" 2>/dev/null | head -5
-          find sdk -type f -name "compilerInfo.xml" | xargs grep -i "device" 2>/dev/null | head -20
-          ls sdk/bin/extdata/ 2>/dev/null | head -20
+          chmod +x sdk/bin/monkeyc
+          sdk/bin/monkeyc \
+            --output Geleia.prg \
+            --private-key developer_key.der \
+            --manifest manifest.xml \
+            --device fr55 \
+            --sdk-path sdk \
+            --jungles monkey.jungle \
+            --release
 
       - name: Upload
         uses: actions/upload-artifact@v4
