@@ -1,4 +1,4 @@
-name: List Garmin Devices
+name: Investigate SDK Structure
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  list:
+  investigate:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,10 +25,16 @@ jobs:
       - name: Extract SDK
         run: |
           unzip -o sdk.zip
+          echo "=== Estrutura de diretórios ==="
+          find . -type d | head -30
+          echo "=== Arquivos .xml ==="
+          find . -name "*.xml"
+          echo "=== Arquivos contendo 'device' ==="
+          find . -name "*device*"
 
-      - name: Search for Forerunner 55 in devices.xml
+      - name: Try to list devices using monkeybrains.jar
         run: |
-          echo "=== Dispositivos encontrados no devices.xml ==="
-          grep -i "fr55\|forerunner55\|forerunner 55" bin/devices.xml || echo "Nenhum dispositivo com '55' encontrado."
-          echo "=== Todos os IDs de dispositivo (primeiros 30) ==="
-          grep -o 'id="[^"]*"' bin/devices.xml | head -30
+          echo "=== Tentando listar dispositivos com -d ? -o /dev/null ==="
+          java -jar bin/monkeybrains.jar -d ? -o /dev/null 2>&1 || true
+          echo "=== Tentando listar com --help ==="
+          java -jar bin/monkeybrains.jar --help 2>&1 | head -50
