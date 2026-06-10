@@ -31,12 +31,11 @@ jobs:
 
       - name: Compile watch face
         run: |
-          java -jar sdk/bin/monkeybrains.jar \
-            -o Geleia.prg \
-            -f monkey.jungle \
-            -y developer_key.der \
-            -d fenix5 \
-            -r
+         java -jar sdk/bin/monkeybrains.jar \
+          -o Geleia.prg \
+          -f monkey.jungle \
+          -y developer_key.der \
+          -r
 
       - name: Upload PRG artifact
         uses: actions/upload-artifact@v4
