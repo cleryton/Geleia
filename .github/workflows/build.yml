@@ -30,6 +30,8 @@ jobs:
           java -Xms512m -Xmx1g -Dfile.encoding=UTF-8 \
             -jar sdk/bin/monkeybrains.jar \
             -p sdk/bin/projectInfo.xml \
+            -a sdk/bin/api.db \
+            -b sdk/bin/api.mir \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
