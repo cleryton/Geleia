@@ -1,4 +1,4 @@
-name: Build Garmin Watch Face
+name: List Garmin Devices
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  list:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,27 +26,16 @@ jobs:
         run: |
           unzip -o sdk.zip
 
-      - name: List available devices
+      - name: List all devices
         run: |
-          echo "=== LISTA DE DISPOSITIVOS ==="
-          java -jar bin/monkeybrains.jar -d ? 2>&1 | tee devices.txt
-          echo "============================"
-          echo "Procurando por '55' ou 'forerunner':"
-          grep -i "55\|forerunner" devices.txt || echo "Nenhum dispositivo com 55 encontrado"
+          echo "=== TODOS OS DISPOSITIVOS DISPONÍVEIS ==="
+          java -jar bin/monkeybrains.jar -d ? 2>&1 | tee device_list.txt
+          echo "========================================="
+          echo "Buscando por '55' ou 'forerunner':"
+          grep -i "55\|forerunner" device_list.txt || echo "Nenhum dispositivo com '55' encontrado."
 
-      - name: Generate developer key
-        run: |
-          openssl genrsa -out developer_key.pem 4096
-          openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
-
-      - name: Compile (tentativa com um nome comum)
-        run: |
-          # Tente um destes nomes (descomente um por vez)
-          # java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d fr55 -r
-          java -jar bin/monkeybrains.jar -o Geleia.prg -f monkey.jungle -y developer_key.der -d fr55_standard -r
-
-      - name: Upload PRG artifact
+      - name: Upload device list
         uses: actions/upload-artifact@v4
         with:
-          name: Geleia-watchface
-          path: Geleia.prg
+          name: device-list
+          path: device_list.txt
