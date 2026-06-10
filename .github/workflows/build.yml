@@ -29,15 +29,14 @@ jobs:
 
       - name: Build Watch Face
         run: |
-          chmod +x sdk/bin/monkeyc
-          sdk/bin/monkeyc \
-            --output Geleia.prg \
-            --private-key developer_key.der \
-            --manifest manifest.xml \
-            --device fr55 \
-            --sdk-path sdk \
-            --jungles monkey.jungle \
-            --release
+         chmod +x sdk/bin/monkeyc
+         sdk/bin/monkeyc \
+         --output Geleia.prg \
+         --private-key developer_key.der \
+         --manifest manifest.xml \
+         --device fr55 \
+         --jungles monkey.jungle \
+         --release
 
       - name: Upload
         uses: actions/upload-artifact@v4
