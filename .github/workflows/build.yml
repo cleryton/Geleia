@@ -25,20 +25,24 @@ jobs:
       - name: Extract SDK
         run: |
           unzip -o sdk.zip
-          ls -la bin/
+
+      - name: List available devices
+        run: |
+          echo "=== Lista de dispositivos (primeiras 50 linhas) ==="
+          java -jar bin/monkeybrains.jar -d ? 2>&1 | head -50
 
       - name: Generate developer key
         run: |
           openssl genrsa -out developer_key.pem 4096
           openssl pkcs8 -topk8 -inform PEM -outform DER -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Compile watch face
+      - name: Compile watch face (tentativa com forerunner55)
         run: |
           java -jar bin/monkeybrains.jar \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
-            -d fr55 \
+            -d forerunner55 \
             -r
 
       - name: Upload PRG artifact
