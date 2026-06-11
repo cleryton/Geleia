@@ -11,8 +11,5 @@
             <iq:language>eng</iq:language>
         </iq:languages>
         <iq:barrels/>
-        <iq:launcherIcon>
-            <iq:small-icon filename="@Drawable.AppIcon"/>
-        </iq:launcherIcon>
     </iq:application>
 </iq:manifest>
