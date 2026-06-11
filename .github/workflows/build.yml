@@ -25,8 +25,6 @@ jobs:
             "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" \
             -O sdk.zip
           unzip -q sdk.zip -d sdk
-          echo "=== SDK contents ==="
-          find sdk -name "monkeybrains.jar" | head -5
 
       - name: Generate developer key
         run: |
@@ -34,19 +32,4 @@ jobs:
           openssl pkcs8 -topk8 -inform PEM -outform DER \
             -in developer_key.pem -out developer_key.der -nocrypt
 
-      - name: Compile watch face
-        run: |
-          SDK_JAR=$(find sdk -name "monkeybrains.jar" | head -1)
-          echo "Using: $SDK_JAR"
-          java -jar "$SDK_JAR" \
-            -o Geleia.prg \
-            -f monkey.jungle \
-            -y developer_key.der \
-            -d fr55 \
-            -r
-
-      - name: Upload PRG artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Geleia-watchface
-          path: Geleia.prg
+      -
