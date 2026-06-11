@@ -11,8 +11,5 @@
             <iq:language>eng</iq:language>
         </iq:languages>
         <iq:barrels/>
-        <iq:launcherIcon>
-            <iq:small-icon filename="images/icon.png"/>
-        </iq:launcherIcon>
     </iq:application>
 </iq:manifest>
