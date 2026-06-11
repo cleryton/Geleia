@@ -1,5 +1,5 @@
 project.manifest = manifest.xml
-
-base = .
-sourceDir = source
-resourceDir = resources
+base.sourceDir = source
+base.resourceDir = resources
+fr55.sourceDir = $(base.sourceDir)
+fr55.resourceDir = $(base.resourceDir)
