@@ -1,14 +1,15 @@
 name: Build Garmin Watch Face
-
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -31,11 +32,12 @@ jobs:
 
       - name: Compile watch face
         run: |
-         java -jar sdk/bin/monkeybrains.jar \
-          -o Geleia.prg \
-          -f monkey.jungle \
-          -y developer_key.der \
-          -r
+          java -jar sdk/bin/monkeybrains.jar \
+            -o Geleia.prg \
+            -f monkey.jungle \
+            -y developer_key.der \
+            -d fr55 \
+            -r
 
       - name: Upload PRG artifact
         uses: actions/upload-artifact@v4
