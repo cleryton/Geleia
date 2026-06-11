@@ -25,6 +25,8 @@ jobs:
             "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-9.1.0-2026-03-09-6a872a80b.zip" \
             -O sdk.zip
           unzip -q sdk.zip -d sdk
+          echo "=== SDK contents ==="
+          find sdk -name "monkeybrains.jar" | head -5
 
       - name: Generate developer key
         run: |
@@ -34,7 +36,9 @@ jobs:
 
       - name: Compile watch face
         run: |
-          java -jar sdk/bin/monkeybrains.jar \
+          SDK_JAR=$(find sdk -name "monkeybrains.jar" | head -1)
+          echo "Using: $SDK_JAR"
+          java -jar "$SDK_JAR" \
             -o Geleia.prg \
             -f monkey.jungle \
             -y developer_key.der \
