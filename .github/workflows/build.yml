@@ -32,4 +32,18 @@ jobs:
           openssl pkcs8 -topk8 -inform PEM -outform DER \
             -in developer_key.pem -out developer_key.der -nocrypt
 
-      -
+      - name: Compile watch face
+        run: |
+          cd sdk
+          java -jar bin/monkeybrains.jar \
+            -o ../Geleia.prg \
+            -f ../monkey.jungle \
+            -y ../developer_key.der \
+            -d fr55 \
+            -r
+
+      - name: Upload PRG artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Geleia-watchface
+          path: Geleia.prg
