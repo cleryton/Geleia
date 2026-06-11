@@ -39,7 +39,7 @@ jobs:
             -o ../Geleia.prg \
             -f ../monkey.jungle \
             -y ../developer_key.der \
-            -d fr55 \
+            -d fr55x \
             -r
 
       - name: Upload PRG artifact
