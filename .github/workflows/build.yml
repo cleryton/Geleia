@@ -22,7 +22,7 @@ jobs:
       - name: Download SDK
         run: |
           wget --no-check-certificate \
-          "https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-10.2.0-2026-06-10-8f4c9d2e1.zip" \
+          "https://developer.garmin.com/downloads/connect-iq/9.2.0/connectiq-sdk-lin-9.2.0-2026-06-09-92a1605b2.zip" \
           -O sdk.zip
           unzip -q sdk.zip -d sdk
 
